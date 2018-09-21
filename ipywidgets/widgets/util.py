@@ -7,3 +7,9 @@ try:
     text_type = unicode
 except NameError:
     text_type = str
+
+
+try:
+    string_types = basestring
+except NameError:
+    string_types = str
