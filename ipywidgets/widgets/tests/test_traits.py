@@ -11,7 +11,7 @@ from unittest import TestCase
 from traitlets import HasTraits, Int, TraitError
 from traitlets.tests.test_traitlets import TraitTestBase
 
-from ipywidgets import Color, NumberFormat
+from ipywidgets import Color, NumberFormat, FullColor
 from ipywidgets.widgets.widget import _remove_buffers, _put_buffers
 from ipywidgets.widgets.trait_types import date_serialization, TypedTuple
 
@@ -38,7 +38,28 @@ class TestColor(TraitTestBase):
     obj = ColorTrait()
 
     _good_values = ["blue", "#AA0", "#FFFFFF", "transparent"]
-    _bad_values = ["vanilla", "blues"]
+    _bad_values = ["vanilla", "blues", 4.2]
+    
+
+class FullColorTrait(HasTraits):
+    value = FullColor("black")
+
+
+class TestFullColor(TraitTestBase):
+    obj = FullColorTrait()
+
+    _good_values = TestColor._good_values +  [
+        '#aaaa', # single digit hex with alpha
+        '#ffffffff',  # double digit hex with alpha
+        'rgb(0, 0, 0)', #rgb
+        'rgb( 20,70,50 )', #rgb with spaces
+        'rgba(10,10,10, 0.5)', #rgba with float alpha
+        'rgba(255, 255, 255, 255)']) # out of bounds alpha (spec says clamp to 1)
+    ]
+    _bad_values = TestColor._bad_values + [
+        1.2, 0.0,  # Should fail with float input
+        0, 1, 2,  # Should fail with int input
+    ]
 
 
 class TestDateSerialization(TestCase):
