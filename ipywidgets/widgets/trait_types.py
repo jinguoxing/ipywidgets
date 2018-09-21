@@ -53,8 +53,9 @@ class FullColor(Color):
         try:
             return super(FullColor, self).validate(obj, value)
         except traitlets.TraitError:
-            if _color_hexa_re.match(value) or _color_rgbhsl_re.match(value):
-                return value
+            if isinstance(value, string_types):
+                if _color_hexa_re.match(value) or _color_rgbhsl_re.match(value):
+                    return value
             raise
         self.error(obj, value)
 
